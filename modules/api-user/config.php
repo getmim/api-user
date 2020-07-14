@@ -2,7 +2,7 @@
 
 return [
     '__name' => 'api-user',
-    '__version' => '0.0.1',
+    '__version' => '0.1.0',
     '__git' => 'git@github.com:getmim/api-user.git',
     '__license' => 'MIT',
     '__author' => [
@@ -22,7 +22,7 @@ return [
                 'api' => NULL
             ],
             [
-                'lib-formatter' => NULL 
+                'lib-formatter' => NULL
             ]
         ],
         'optional' => []
@@ -32,6 +32,10 @@ return [
             'ApiUser\\Controller' => [
                 'type' => 'file',
                 'base' => 'modules/api-user/controller'
+            ],
+            'ApiUser\\Library' => [
+                'type' => 'file',
+                'base' => 'modules/api-user/library'
             ]
         ],
         'files' => []

@@ -9,23 +9,10 @@ namespace ApiUser\Controller;
 
 use LibUser\Library\Fetcher;
 use LibFormatter\Library\Formatter;
+use ApiUser\Library\Formatter as _Fmt;
 
 class UserController extends \Api\Controller
 {
-    private function format(object &$user): void{
-        $rf = $this->config->apiUser->formatter->remove ?? [];
-        if(!$rf)
-            return;
-        foreach($rf as $fl => $vl){
-            if(property_exists($user, $fl))
-                unset($user->$fl);
-        }
-    }
-
-    private function formatMany(array &$users): void{
-        foreach($users as &$user)
-            self::format($user);
-    }
 
     public function indexAction(){
         if(!$this->app->isAuthorized())
@@ -39,7 +26,7 @@ class UserController extends \Api\Controller
 
         $users = Fetcher::get($cond, $rpp, $page, ['name' => 'DESC']);
         $users = !$users ? [] : Formatter::formatMany('user', $users);
-        self::formatMany($users);
+        _Fmt::formatMany($users);
 
         foreach($users as &$pg)
             unset($pg->content, $pg->meta);
@@ -68,7 +55,7 @@ class UserController extends \Api\Controller
             return $this->resp(404);
 
         $user = Formatter::format('user', $user);
-        self::format($user);
+        _Fmt::format($user);
 
         $this->resp(0, $user);
     }
