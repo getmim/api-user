@@ -2,7 +2,7 @@
 /**
  * UserController
  * @package api-user
- * @version 0.0.1
+ * @version 0.2.0
  */
 
 namespace ApiUser\Controller;
@@ -10,9 +10,34 @@ namespace ApiUser\Controller;
 use LibUser\Library\Fetcher;
 use LibFormatter\Library\Formatter;
 use ApiUser\Library\Formatter as _Fmt;
+use LibForm\Library\Form;
+use LibUserMain\Model\User;
 
 class UserController extends \Api\Controller
 {
+    public function createAction()
+    {
+        if(!$this->app->isAuthorized())
+            return $this->resp(401);
+        if(!$this->app->hasScope('user-create'))
+            return $this->resp(401);
+
+        $form = new Form('api-user.create');
+        if(!($valid = $form->validate())) {
+            return $this->resp(422, $form->getErrors());
+        }
+
+        $valid->password = $this->user->hashPassword($valid->password);
+
+        if(!($id = User::create((array)$valid)))
+            return $this->resp(500, User::lastError());
+
+        $user = Fetcher::getOne(['id' => $id]);
+
+        $user = Formatter::format('user', $user);
+        _Fmt::format($user);
+        return $this->resp(0, $user);
+    }
 
     public function indexAction(){
         if(!$this->app->isAuthorized())

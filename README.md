@@ -30,3 +30,7 @@ return [
 ### `GET APIHOST/user?{q,rpp,page}`
 
 ### `GET APIHOST/user/(id|name)`
+
+### `POST APIHOST/user {name,fullname,password}`
+
+With `user-create` scope.

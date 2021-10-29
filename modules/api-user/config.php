@@ -2,7 +2,7 @@
 
 return [
     '__name' => 'api-user',
-    '__version' => '0.1.0',
+    '__version' => '0.2.0',
     '__git' => 'git@github.com:getmim/api-user.git',
     '__license' => 'MIT',
     '__author' => [
@@ -23,6 +23,9 @@ return [
             ],
             [
                 'lib-formatter' => NULL
+            ],
+            [
+                'lib-form' => NULL
             ]
         ],
         'optional' => []
@@ -49,6 +52,13 @@ return [
                 'handler' => 'ApiUser\\Controller\\User::index',
                 'method' => 'GET'
             ],
+            'apiUserCreate' => [
+                'path' => [
+                    'value' => '/user'
+                ],
+                'handler' => 'ApiUser\\Controller\\User::create',
+                'method' => 'POST'
+            ],
             'apiUserSingle' => [
                 'path' => [
                     'value' => '/user/(:identity)',
@@ -64,6 +74,31 @@ return [
     'apiUser' => [
         'formatter' => [
             'remove' => []
+        ]
+    ],
+    'libForm' => [
+        'forms' => [
+            'api-user.create' => [
+                'name' => [
+                    'rules' => [
+                        'required' => true,
+                        'unique' => [
+                            'model' => 'LibUser\\Library\\Fetcher',
+                            'field' => 'name'
+                        ],
+                    ]
+                ],
+                'fullname' => [
+                    'rules' => [
+                        'required' => true,
+                    ]
+                ],
+                'password' => [
+                    'rules' => [
+                        'required' => true
+                    ]
+                ]
+            ]
         ]
     ]
 ];
