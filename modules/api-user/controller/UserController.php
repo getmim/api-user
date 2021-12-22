@@ -2,7 +2,7 @@
 /**
  * UserController
  * @package api-user
- * @version 0.2.0
+ * @version 0.2.1
  */
 
 namespace ApiUser\Controller;
@@ -45,7 +45,9 @@ class UserController extends \Api\Controller
 
         list($page, $rpp) = $this->req->getPager();
 
-        $cond = [];
+        $cond = [
+            'status' => ['__op', '>', 0]
+        ];
         if($q = $this->req->getQuery('q'))
             $cond['q'] = $q;
 
@@ -72,9 +74,19 @@ class UserController extends \Api\Controller
 
         $identity = $this->req->param->identity;
 
-        $user = Fetcher::getOne(['id'=>$identity]);
-        if(!$user)
-            $user = Fetcher::getOne(['name'=>$identity]);
+        $cond = [
+            'id' => $identity,
+            'status' => ['__op', '>', 0]
+        ];
+
+        $user = Fetcher::getOne($cond);
+        if(!$user){
+            $cond = [
+                'status' => ['__op', '>', 0],
+                'name' => $identity
+            ];
+            $user = Fetcher::getOne($cond);
+        }
 
         if(!$user)
             return $this->resp(404);
